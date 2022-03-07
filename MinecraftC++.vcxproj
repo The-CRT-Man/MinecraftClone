@@ -19,31 +19,19 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="camera.cpp" />
-    <ClCompile Include="chunk.cpp" />
-    <ClCompile Include="loader.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="obj_loader.cpp" />
-    <ClCompile Include="perlin.cpp" />
-    <ClCompile Include="renderer.cpp" />
-    <ClCompile Include="rendering_engine.cpp" />
-    <ClCompile Include="shader.cpp" />
-    <ClCompile Include="world.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="camera.hpp" />
-    <ClInclude Include="chunk.hpp" />
-    <ClInclude Include="entity.hpp" />
-    <ClInclude Include="loader.hpp" />
-    <ClInclude Include="main.hpp" />
-    <ClInclude Include="model.hpp" />
-    <ClInclude Include="obj_loader.hpp" />
-    <ClInclude Include="perlin.hpp" />
-    <ClInclude Include="renderer.hpp" />
-    <ClInclude Include="rendering_engine.hpp" />
-    <ClInclude Include="shader.hpp" />
+    <ClInclude Include="include\camera.hpp" />
+    <ClInclude Include="include\chunk.hpp" />
+    <ClInclude Include="include\entity.hpp" />
+    <ClInclude Include="include\loader.hpp" />
+    <ClInclude Include="include\main.hpp" />
+    <ClInclude Include="include\model.hpp" />
+    <ClInclude Include="include\obj_loader.hpp" />
+    <ClInclude Include="include\perlin.hpp" />
+    <ClInclude Include="include\renderer.hpp" />
+    <ClInclude Include="include\rendering_engine.hpp" />
+    <ClInclude Include="include\shader.hpp" />
+    <ClInclude Include="include\world.hpp" />
     <ClInclude Include="stb\stb_image.h" />
-    <ClInclude Include="world.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\chunk_fragment_shader.glsl" />
@@ -53,6 +41,18 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\texture_atlas.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\camera.cpp" />
+    <ClCompile Include="src\chunk.cpp" />
+    <ClCompile Include="src\loader.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\obj_loader.cpp" />
+    <ClCompile Include="src\perlin.cpp" />
+    <ClCompile Include="src\renderer.cpp" />
+    <ClCompile Include="src\rendering_engine.cpp" />
+    <ClCompile Include="src\shader.cpp" />
+    <ClCompile Include="src\world.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
