@@ -1,5 +1,4 @@
-#ifndef MODEL_HPP
-#define MODEL_HPP
+#pragma once
 
 #include <cstddef>
 
@@ -8,5 +7,3 @@ struct Model {
     std::size_t vertexCount;
     bool usesIndices;
 };
-
-#endif

@@ -11,7 +11,7 @@
 #include "loader.hpp"
 
 const unsigned int WIDTH = 16;
-const unsigned HEIGHT = 256;
+const unsigned int HEIGHT = 256;
 
 typedef std::array<std::array<std::array<int, WIDTH>, HEIGHT>, WIDTH> Array3D;
 
@@ -24,34 +24,29 @@ public:
     void tick();
 
     void buildMesh();
+    void removeFaceFromMesh(glm::vec3 position, Face face);
+    void finaliseMesh();
+
+    std::unordered_map<Face, std::vector<glm::vec3>>& getFacePositions();
+    std::unordered_map<Face, std::vector<int>>& getFaceTextureIDs();
 
     std::vector<Model*> getModels();
     unsigned int getTexture() { return texture; }
     unsigned int getNumberOfFaces(unsigned int faceIndex);
+    glm::vec2 getPosition();
     glm::mat4 getTransform();
+    std::shared_ptr<Array3D> getChunkData();
 
 private:
     std::unordered_map<Face, std::vector<float>*> faceVertices;
 
-    std::unique_ptr<Array3D> chunkData;
+    std::unordered_map<Face, std::vector<glm::vec3>> facePositions;
+    std::unordered_map<Face, std::vector<int>> faceTextureIDs;
+
+    std::shared_ptr<Array3D> chunkData;
     Loader& loader;
 
-    /*
-    Model topFaceM;
-    Model bottomFaceM;
-    Model leftFaceM;
-    Model rightFaceM;
-    Model frontFaceM;
-    Model backFaceM;*/
     std::unordered_map<Face, Model> models;
-
-    /*
-    unsigned int topFaces;
-    unsigned int bottomFaces;
-    unsigned int leftFaces;
-    unsigned int rightFaces;
-    unsigned int frontFaces;
-    unsigned int backFaces;*/
     std::unordered_map<Face, unsigned int> numberOfFaces;
 
     glm::vec2 position;

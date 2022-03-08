@@ -9,7 +9,7 @@
 #include <GL/glew.h>
 #include <GL/gl.h>
 
-#include "stb/stb_image.h"
+#include "stb_image.h"
 
 Loader::Loader() {
     stbi_set_flip_vertically_on_load(true);  

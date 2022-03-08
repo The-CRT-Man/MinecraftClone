@@ -59,6 +59,7 @@ int main() {/*
     unsigned int texture = loader.loadTexture("res/texture_atlas.png", GL_NEAREST, GL_NEAREST);
 
     World world(loader, texture);
+    world.finishMesh();
 
     sf::Clock clock;
 
