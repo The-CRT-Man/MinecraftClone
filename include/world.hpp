@@ -1,6 +1,7 @@
 #pragma once
 
 #include <list>
+#include <vector>
 #include <memory>
 
 #include "chunk.hpp"
@@ -16,6 +17,6 @@ public:
 	void tick();
 
 private:
-	std::list<std::shared_ptr<Chunk>> chunks;
+	std::vector<std::vector<std::shared_ptr<Chunk>>> chunks;
 };
 

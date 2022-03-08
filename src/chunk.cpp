@@ -65,7 +65,7 @@ const std::vector<Face> allFaces = { Face::Top, Face::Bottom, Face::Left, Face::
 
 Chunk::Chunk(Loader& loader, unsigned int texture, glm::vec2 position) 
     : loader(loader), texture(texture), position(position) {
-    this->chunkData = std::make_unique<Array3D>();
+    this->chunkData = std::make_shared<Array3D>();
 
     faceVertices[Face::Top] = &topFace;
     faceVertices[Face::Bottom] = &bottomFace;
@@ -99,9 +99,6 @@ Chunk::Chunk(Loader& loader, unsigned int texture, glm::vec2 position)
 }
 
 void Chunk::buildMesh() {
-    std::unordered_map<Face, std::vector<glm::vec3>> facePositions;
-    std::unordered_map<Face, std::vector<int>> faceTextureIDs;
-
     for (unsigned int x = 0; x < WIDTH; x++) {
         for (unsigned int y = 0; y < HEIGHT; y++) {
             for (unsigned int z = 0; z < WIDTH; z++) {
@@ -119,11 +116,40 @@ void Chunk::buildMesh() {
         }
     }
     
+    //finaliseMesh();
+}
+
+void Chunk::removeFaceFromMesh(glm::vec3 position, Face face) {
+    int i = 0;
+    for (auto& facePosition : facePositions[face]) {
+        if (facePosition == position) {
+            facePositions[face].erase(facePositions[face].begin() + i);
+            faceTextureIDs[face].erase(faceTextureIDs[face].begin() + i);
+        }
+        i++;
+    }
+}
+
+void Chunk::finaliseMesh() {
     for (auto face : allFaces)
         numberOfFaces[face] = facePositions[face].size();
 
-    for (auto face : allFaces)
-        models[face] = loader.generateInstancedBlockMesh(*faceVertices[face], faceIndices, facePositions[face], faceTextureIDs[face]);
+    for (auto face : allFaces) {
+        if (facePositions[face].size() == 0 || faceTextureIDs.size() == 0)
+            // TODO: load empty model
+            models[face] = Model({ 0, 0, true });
+        else
+            models[face] = loader.generateInstancedBlockMesh(*faceVertices[face], faceIndices, facePositions[face], faceTextureIDs[face]);
+        
+    }
+}
+
+std::unordered_map<Face, std::vector<glm::vec3>>& Chunk::getFacePositions() {
+    return facePositions;
+}
+
+std::unordered_map<Face, std::vector<int>>& Chunk::getFaceTextureIDs() {
+    return faceTextureIDs;
 }
 
 bool Chunk::shouldAddFace(int x, int y, int z, Face face) {
@@ -210,4 +236,12 @@ int Chunk::getTextureID(Face face, int blockID) {
     }
 
     return textureID;
+}
+
+glm::vec2 Chunk::getPosition() {
+    return position;
+}
+
+std::shared_ptr<Array3D> Chunk::getChunkData() {
+    return chunkData;
 }
