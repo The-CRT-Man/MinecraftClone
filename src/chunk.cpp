@@ -98,25 +98,27 @@ Chunk::Chunk(Loader& loader, unsigned int texture, glm::vec2 position)
     }
 }
 
-void Chunk::buildMesh() {
-    for (unsigned int x = 0; x < WIDTH; x++) {
-        for (unsigned int y = 0; y < HEIGHT; y++) {
+void Chunk::buildMesh(std::unordered_map<Face, std::shared_ptr<Chunk>>& neighbouringChunks) {
+    std::unordered_map<Face, bool> existingNeighbours = {};
+    for (auto& face : allFaces)
+        existingNeighbours[face] = (neighbouringChunks.find(face) == neighbouringChunks.end());
+
+    for (unsigned int x = 0; x < WIDTH; x++)
+        for (unsigned int y = 0; y < HEIGHT; y++)
             for (unsigned int z = 0; z < WIDTH; z++) {
                 int blockID = (*chunkData)[x][y][z];
 
                 if (blockID == 0) continue;
      
                 for (auto face : allFaces) {
-                    if (shouldAddFace(x, y, z, face)) {
+                    if (shouldAddFace(x, y, z, face, neighbouringChunks, existingNeighbours)) {
                         facePositions[face].push_back(glm::vec3(x, y, z));
                         faceTextureIDs[face].push_back(getTextureID(face, blockID));
                     }
                 }
             }
-        }
-    }
     
-    //finaliseMesh();
+    finaliseMesh();
 }
 
 void Chunk::removeFaceFromMesh(glm::vec3 position, Face face) {
@@ -152,7 +154,7 @@ std::unordered_map<Face, std::vector<int>>& Chunk::getFaceTextureIDs() {
     return faceTextureIDs;
 }
 
-bool Chunk::shouldAddFace(int x, int y, int z, Face face) {
+bool Chunk::shouldAddFace(int x, int y, int z, Face face, std::unordered_map<Face, std::shared_ptr<Chunk>>& neighbouringChunks, std::unordered_map<Face, bool>& existingNeighbours) {
     if (face == Face::Top) {
         if (y == HEIGHT - 1)
             return true;
@@ -167,25 +169,37 @@ bool Chunk::shouldAddFace(int x, int y, int z, Face face) {
     } 
     else if (face == Face::Left) {
         if (x == 0)
-            return true;
+            if (!existingNeighbours[Face::Left])
+                return ((*neighbouringChunks[Face::Left]->getChunkData())[WIDTH - 1][y][z] == 0);
+            else
+                return true;
         else
             return ((*chunkData)[x - 1][y][z] == 0);
     } 
     else if (face == Face::Right) {
         if (x == WIDTH - 1)
-            return true;
+            if (!existingNeighbours[Face::Right])
+                return ((*neighbouringChunks[Face::Right]->getChunkData())[0][y][z] == 0);
+            else
+                return true;
         else
             return ((*chunkData)[x + 1][y][z] == 0);
     } 
     else if (face == Face::Back) {
         if (z == 0)
-            return true;
+            if (!existingNeighbours[Face::Back])
+                return ((*neighbouringChunks[Face::Back]->getChunkData())[x][y][WIDTH - 1] == 0);
+            else
+                return true;
         else
             return ((*chunkData)[x][y][z - 1] == 0);
     } 
     else if (face == Face::Front) {
         if (z == WIDTH - 1)
-            return true;
+            if (!existingNeighbours[Face::Front])
+                return ((*neighbouringChunks[Face::Front]->getChunkData())[x][y][0] == 0);
+            else
+                return true;
         else
             return ((*chunkData)[x][y][z + 1] == 0);
     } 
