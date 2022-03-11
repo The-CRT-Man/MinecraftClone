@@ -14,6 +14,7 @@ const unsigned int WIDTH = 16;
 const unsigned int HEIGHT = 256;
 
 typedef std::array<std::array<std::array<int, WIDTH>, HEIGHT>, WIDTH> Array3D;
+typedef std::vector<std::vector<std::vector<int>>> Structure;
 
 enum class Face { Top, Bottom, Left, Right, Front, Back };
 
@@ -55,4 +56,5 @@ private:
 
     bool shouldAddFace(int x, int y, int z, Face face, std::unordered_map<Face, std::shared_ptr<Chunk>>& neighbouringChunks, std::unordered_map<Face, bool>& existingNeighbours);
     int getTextureID(Face face, int blockID);
+    void loadStructure(glm::vec3 position, Structure& structure);
 };

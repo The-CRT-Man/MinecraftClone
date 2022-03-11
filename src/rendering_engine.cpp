@@ -47,6 +47,8 @@ void RenderingEngine::initialiseOpenGL() {
     glEnable(GL_CULL_FACE);
     //glEnable(GL_BLEND);
 
+    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     glCullFace(GL_BACK);
     glViewport(0, 0, 1280, 720);
     glClearColor(0.729f, 0.918f, 1.0f, 1.0f);
