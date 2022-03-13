@@ -56,5 +56,4 @@ private:
 
     bool shouldAddFace(int x, int y, int z, Face face, std::unordered_map<Face, std::shared_ptr<Chunk>>& neighbouringChunks, std::unordered_map<Face, bool>& existingNeighbours);
     int getTextureID(Face face, int blockID);
-    void loadStructure(glm::vec3 position, Structure& structure);
 };

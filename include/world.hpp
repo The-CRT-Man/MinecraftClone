@@ -17,6 +17,7 @@ public:
 private:
 	std::vector<std::vector<std::shared_ptr<Chunk>>> chunks;
 	void decorateWorld();
+	void loadStructure(glm::vec3 position, const Structure& structure);
 	Loader& loader;
 };
 

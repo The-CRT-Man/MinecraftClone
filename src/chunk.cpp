@@ -62,51 +62,6 @@ std::vector<int> faceIndices = {
     3, 1, 2
 };
 
-std::vector<std::vector<std::vector<int>>> tree = {
-    {
-        {0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0},
-        {0, 0, 4, 0, 0},
-        {0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0}
-    },
-    {
-        {0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0},
-        {0, 0, 4, 0, 0},
-        {0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0}
-    },
-    {
-        {5, 5, 5, 5, 5},
-        {5, 5, 5, 5, 5},
-        {5, 5, 4, 5, 5},
-        {5, 5, 5, 5, 5},
-        {5, 5, 5, 5, 5}
-    },
-    {
-        {0, 5, 5, 5, 0},
-        {5, 5, 5, 5, 5},
-        {5, 5, 4, 5, 5},
-        {5, 5, 5, 5, 5},
-        {0, 5, 5, 5, 5}
-    },
-    {
-        {0, 0, 0, 0, 0},
-        {0, 0, 5, 0, 0},
-        {0, 5, 4, 5, 0},
-        {0, 0, 5, 0, 0},
-        {0, 0, 0, 0, 0}
-    },
-    {
-        {0, 0, 0, 0, 0},
-        {0, 0, 5, 0, 0},
-        {0, 5, 5, 5, 0},
-        {0, 0, 5, 0, 0},
-        {0, 0, 0, 0, 0}
-    }
-};
-
 const std::vector<Face> allFaces = { Face::Top, Face::Bottom, Face::Left, Face::Right, Face::Front, Face::Back };
 
 Chunk::Chunk(Loader& loader, unsigned int texture, glm::vec2 position)
@@ -147,15 +102,6 @@ Chunk::Chunk(Loader& loader, unsigned int texture, glm::vec2 position)
             }
         }
     }
-
-    unsigned int treeX = std::rand() % 16;
-    unsigned int treeY = std::rand() % 16;
-    float perlinX = (treeX) / ((float)WIDTH) + position.x;
-    float perlinY = (treeY) / ((float)WIDTH) + position.y;
-    int height = (int)(10 * perlin.getPerlin(perlinX, perlinY) + 64);
-    glm::vec3 treePosition(treeX, height, treeY);
-
-    loadStructure(treePosition, tree);
 }
 
 void Chunk::buildMesh(std::unordered_map<Face, std::shared_ptr<Chunk>>& neighbouringChunks) {
@@ -292,29 +238,6 @@ glm::mat4 Chunk::getTransform() {
     transform = glm::translate(transform, worldPosition);
 
     return transform;
-}
-
-/*
-* Plan to make structures load across chunks,
-* 1. Find out which neighbouring chunks the model is overlapping
-* 2. Offset the structure relative to the chunk so that it is in the same position relative to the world 
-* 3. For each of these chunks load the structure, make sure not to do recursion
-*/
-
-void Chunk::loadStructure(glm::vec3 position, Structure& structure) {
-    int structureWidthX = structure[0][0].size();
-    int structureWidthZ = structure[0].size();
-    int structureHeight = structure.size();
-
-    for (int y = 0; y < structureHeight; y++)
-        for (int z = 0; z < structureWidthZ; z++)
-            for (int x = 0; x < structureWidthX; x++) {
-                try {
-                    if ((*chunkData).at(position.x + x - (structureWidthX / 2)).at(position.y + y).at(position.z + z - (structureWidthZ / 2)) == 0)
-                        (*chunkData).at(position.x + x - (structureWidthX / 2)).at(position.y + y).at(position.z + z - (structureWidthZ / 2)) = structure[y][x][z];
-                }
-                catch (const std::exception& e) {}
-            }
 }
 
 int Chunk::getTextureID(Face face, int blockID) {
