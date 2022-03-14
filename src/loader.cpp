@@ -133,6 +133,25 @@ Model Loader::generateInstancedBlockMesh(std::vector<float> face, std::vector<in
     return model;
 }
 
+Model Loader::generate2DModel(std::vector<float> vertices, std::vector<float> textureCoords, std::vector<int> indices) {
+    unsigned int vao;
+    glGenVertexArrays(1, &vao);
+    vaos.push_back(vao);
+
+    glBindVertexArray(vao);
+
+    generateVBO(0, 2, vertices, GL_STATIC_DRAW);
+    generateVBO(1, 2, textureCoords, GL_STATIC_DRAW);
+
+    generateIndicesVBO(indices, GL_STATIC_DRAW);
+
+    glBindVertexArray(0);
+
+    Model model = { vao, indices.size(), true };
+
+    return model;
+}
+
 unsigned int Loader::loadTexture(std::string path) {
     return loadTexture(path, GL_LINEAR, GL_LINEAR_MIPMAP_LINEAR);
 }

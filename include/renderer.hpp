@@ -14,8 +14,8 @@ public:
 
     virtual void render(Entity& entity);
 
-    virtual void begin();
-    virtual void end();
+    void begin();
+    void end();
 
 protected:
     std::shared_ptr<Shader> shader;
@@ -34,9 +34,18 @@ public:
         : Renderer(shader, camera, 5) {}
 
     void render(std::shared_ptr<Chunk> chunk);
-    void begin() override;
-    void end() override;
 
+private:
+    void setUniforms() override;
+};
+
+class HUDRenderer : public Renderer {
+public:
+    HUDRenderer(std::shared_ptr<Shader> shader, std::shared_ptr<Camera> camera)
+        : Renderer(shader, camera, 2) {}
+
+    void render(std::shared_ptr<HUDElement> hudElement);
+    
 private:
     void setUniforms() override;
 };

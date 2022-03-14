@@ -83,11 +83,30 @@ void ChunkRenderer::setUniforms() {
     shader->setInt("textureAtlasRows", 256 / 16);
 }
 
-void ChunkRenderer::begin() {
-    shader->use();
-    setUniforms();
+void HUDRenderer::render(std::shared_ptr<HUDElement> hudElement) {
+    Model& model = hudElement->model;
+    unsigned int texture = hudElement->texture;
+
+    shader->setMatrix3fv("transform", hudElement->transform);
+
+    glBindVertexArray(model.vao);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture);
+
+    enableVertexAttribArrays();
+
+    if (model.usesIndices)
+        glDrawElements(GL_TRIANGLES, model.vertexCount, GL_UNSIGNED_INT, 0);
+    else
+        glDrawArrays(GL_TRIANGLES, 0, model.vertexCount);
+
+    disableVertexAttribArrays();
+
+    glBindVertexArray(0);
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void ChunkRenderer::end() {
-    shader->unUse();
+void HUDRenderer::setUniforms() {
+    
 }

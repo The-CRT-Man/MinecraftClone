@@ -19,6 +19,8 @@ public:
     Model generateModelBlockFace(std::vector<float> face, std::vector<int> indices);
     Model generateInstancedBlockMesh(std::vector<float> face, std::vector<int> indices, std::vector<glm::vec3> positions, std::vector<int> textureIDs);
 
+    Model generate2DModel(std::vector<float> vertices, std::vector<float> textureCoords, std::vector<int> indices);
+
     unsigned int loadTexture(std::string path, unsigned int interpolation, unsigned int mipmapInterpolation);
     unsigned int loadTexture(std::string path);
 

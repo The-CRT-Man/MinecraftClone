@@ -17,6 +17,7 @@
 class RenderingEngine {
 public:
     std::vector<std::shared_ptr<Entity>> entities;
+    std::vector<std::shared_ptr<HUDElement>> hudElements;
 
     RenderingEngine();
     bool isRunning();
@@ -29,11 +30,13 @@ private:
 
     std::shared_ptr<Shader> shader;
     std::shared_ptr<Shader> chunkShader;
+    std::shared_ptr<Shader> hudShader;
 
     std::shared_ptr<Camera> camera;
 
     std::unique_ptr<Renderer> renderer;
     std::shared_ptr<ChunkRenderer> chunkRenderer;
+    std::shared_ptr<HUDRenderer> hudRenderer;
 
     bool running = true;
 

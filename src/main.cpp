@@ -32,34 +32,16 @@ int main() {/*
 
     Loader loader;
 
-    std::vector<float> vertices = {
-        0.5f,  0.5f, 0.0f,  // top right
-        0.5f, -0.5f, 0.0f,  // bottom right
-        -0.5f, -0.5f, 0.0f,  // bottom left
-        -0.5f,  0.5f, 0.0f   // top left 
-    };
-    std::vector<float> textureCoords = {
-        1.0f, 1.0f,
-        1.0f, 0.0f,
-        0.0f, 0.0f,
-        0.0f, 1.0f
-    };
-    std::vector<float> normals = {
-        0.5f,  0.5f, 0.0f,  // top right
-        0.5f, -0.5f, 0.0f,  // bottom right
-        -0.5f, -0.5f, 0.0f,  // bottom left
-        -0.5f,  0.5f, 0.0f   // top left 
-    };
-    std::vector<int> indices = {  // note that we start from 0!
-        3, 1, 0,   // first triangle
-        3, 2, 1    // second triangle
-    };
-
-    Model model = loader.generateModel(vertices, textureCoords, normals, indices);
     unsigned int texture = loader.loadTexture("res/texture_atlas.png", GL_NEAREST, GL_NEAREST);
 
     World world(loader, texture);
     //world.finishMesh();
+
+    unsigned int crosshairTexture = loader.loadTexture("res/crosshair.png", GL_NEAREST, GL_NEAREST);
+    std::shared_ptr<HUDElement> crosshair = std::make_shared<HUDElement>(crosshairTexture, loader);
+    crosshair->scale = glm::vec2(32.0f / 1280.0f, 32.0f / 720.0f);
+
+    renderingEngine->hudElements.push_back(crosshair);
 
     sf::Clock clock;
 
@@ -70,6 +52,7 @@ int main() {/*
         renderingEngine->tick(dt);
 
         world.tick();
+        crosshair->tick();
 
         renderingEngine->render(world);
     }

@@ -15,6 +15,7 @@ public:
     void unUse();
 
     void setMatrix4fv(std::string uniformName, glm::mat4 value);
+    void setMatrix3fv(std::string uniformName, glm::mat3 value);
     void setInt(std::string uniformName, int value);
     void setVector2fv(std::string uniformName, glm::vec2 value);
 
