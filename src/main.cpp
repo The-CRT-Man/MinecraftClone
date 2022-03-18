@@ -52,6 +52,12 @@ int main() {/*
         renderingEngine->tick(dt);
 
         world.tick();
+        glm::vec3 ray = renderingEngine->getCamera()->castCollisionRay(world, 10.0f, 0.1f);
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+            world.setBlock(ray, 0);
+            std::cout << "(" << ray.x << ", " << ray.y << ", " << ray.z << ")\n";
+        }
+
         crosshair->tick();
 
         renderingEngine->render(world);

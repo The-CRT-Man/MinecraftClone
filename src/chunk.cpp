@@ -104,6 +104,14 @@ Chunk::Chunk(Loader& loader, unsigned int texture, glm::vec2 position)
     }
 }
 
+void Chunk::setBlock(glm::vec3 position, int blockID, std::unordered_map<Face, std::shared_ptr<Chunk>>& neighbouringChunks) {
+    (*chunkData)[position.x][position.y][position.z] = blockID;
+
+    facePositions.clear();
+    faceTextureIDs.clear();
+    buildMesh(neighbouringChunks);
+}
+
 void Chunk::buildMesh(std::unordered_map<Face, std::shared_ptr<Chunk>>& neighbouringChunks) {
     std::unordered_map<Face, bool> existingNeighbours = {};
     for (auto& face : allFaces)

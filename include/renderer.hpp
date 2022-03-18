@@ -7,6 +7,8 @@
 #include "entity.hpp"
 #include "chunk.hpp"
 
+class Camera;
+
 class Renderer {
 public:
     Renderer(std::shared_ptr<Shader> shader, std::shared_ptr<Camera> camera, int vbos)

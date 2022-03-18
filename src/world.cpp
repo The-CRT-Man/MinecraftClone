@@ -10,6 +10,10 @@
 
 #include "perlin.hpp"
 
+inline int mod(int a, int b) {
+	return (a % b + b) % b;
+}
+
 std::vector<std::vector<std::vector<int>>> tree = {
 	{
 		{0, 0, 0, 0, 0},
@@ -90,6 +94,25 @@ World::World(Loader& loader, unsigned int texture) : loader(loader) {
 		}
 }
 
+void World::setBlock(glm::vec3 position, int blockID) {
+	//glm::vec2 worldChunkCoords(floor(position.x / WIDTH), floor(position.z / WIDTH));
+	int x = floor(position.x / WIDTH);
+	int y = floor(position.z / WIDTH);
+
+	glm::vec3 chunkPosition(mod((int)position.x, WIDTH), position.y, mod((int)position.z, WIDTH));
+
+	std::unordered_map<Face, std::shared_ptr<Chunk>> neighbouringChunks;
+	std::shared_ptr<Chunk> chunk = chunks[x + 8][y + 8];
+
+	if (x != -8) neighbouringChunks[Face::Left] = chunks[x + 7][y + 8];
+	if (x != 7) neighbouringChunks[Face::Right] = chunks[x + 9][y + 8];
+
+	if (y != -8) neighbouringChunks[Face::Back] = chunks[x + 8][y + 7];
+	if (y != 7) neighbouringChunks[Face::Front] = chunks[x + 8][y + 9];
+
+	chunk->setBlock(chunkPosition, blockID, neighbouringChunks);
+}
+
 void World::decorateWorld() {
 	Perlin perlin;
 
@@ -110,9 +133,9 @@ void World::decorateWorld() {
 }
 
 void World::loadStructure(glm::vec3 position, const Structure& structure) {
-	glm::vec2 worldChunkCoords(floor(position.x / 16), floor(position.z / 16)); // position of chunk in world
+	glm::vec2 worldChunkCoords(floor(position.x / WIDTH), floor(position.z / WIDTH)); // position of chunk in world
 	glm::vec3 dimensions(structure[0][0].size(), structure.size(), structure[0].size());  
-	std::vector<glm::vec3> chunkPositions = { glm::vec3((int)position.x % WIDTH, position.y, (int)position.z % WIDTH) }; // position of origin corner of structure, relative to chunk
+	std::vector<glm::vec3> chunkPositions = { glm::vec3(mod((int)position.x, WIDTH), position.y, mod((int)position.z, WIDTH)) }; // position of origin corner of structure, relative to chunk
 	std::vector<std::shared_ptr<Chunk>> chunks;
 	
 	try {
@@ -159,6 +182,20 @@ void World::loadStructure(glm::vec3 position, const Structure& structure) {
 					}
 					catch (const std::exception& e) {}
 				}
+}
+
+int World::getBlockAtPosition(glm::vec3 position) {
+	//glm::vec3 blockCoordinate(floor(position.x), floor(position.y), floor(position.z));
+	glm::vec2 worldChunkCoords(floor(position.x / WIDTH), floor(position.z / WIDTH));
+	glm::vec3 chunkPosition(mod((int)position.x, WIDTH), (int)position.y, mod((int)position.z, WIDTH));
+
+	int blockID = -1;
+	try {
+		blockID = (*chunks.at(worldChunkCoords.x + 8).at(worldChunkCoords.y + 8)->getChunkData()).at(chunkPosition.x).at(chunkPosition.y).at(chunkPosition.z);
+	}
+	catch (const std::exception& e) {}
+
+	return blockID;
 }
 
 void World::render(std::shared_ptr<ChunkRenderer> renderer) {

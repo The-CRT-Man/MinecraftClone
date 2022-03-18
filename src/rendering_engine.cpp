@@ -111,3 +111,7 @@ void RenderingEngine::render(World& world) {
 
     this->window->display();
 }
+
+std::shared_ptr<Camera> RenderingEngine::getCamera() {
+    return camera;
+}

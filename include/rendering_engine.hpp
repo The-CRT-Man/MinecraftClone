@@ -25,6 +25,8 @@ public:
     void tick(float dt);
     void render(World& world);
 
+    std::shared_ptr<Camera> getCamera();
+
 private:
     std::shared_ptr<sf::RenderWindow> window;
 

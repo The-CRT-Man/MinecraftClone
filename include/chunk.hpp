@@ -21,6 +21,7 @@ enum class Face { Top, Bottom, Left, Right, Front, Back };
 class Chunk {
 public:
     Chunk(Loader& loader, unsigned int texture, glm::vec2 position);
+    void setBlock(glm::vec3 position, int blockID, std::unordered_map<Face, std::shared_ptr<Chunk>>& neighbouringChunks);
 
     void tick();
 

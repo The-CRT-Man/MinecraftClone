@@ -1,5 +1,4 @@
-#ifndef CAMERA_HPP
-#define CAMERA_HPP
+#pragma once
 
 #include <memory>
 #include <chrono>
@@ -7,6 +6,10 @@
 #include <SFML/Graphics.hpp>
 
 #include <glm/glm.hpp>
+
+#include "world.hpp"
+
+class World;
 
 class Camera {
 public:
@@ -21,6 +24,7 @@ public:
     void updateAspectRatio(float aspectRatio);
 
     void setPosition(glm::vec3 position) { this->position = position; }
+    glm::vec3 castCollisionRay(World& world, float depth, float quality);
 
 private:
     bool cursorLocked = false;
@@ -38,5 +42,3 @@ private:
 
     void updateCameraFront();
 };
-
-#endif

@@ -10,6 +10,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include "world.hpp"
+
 Camera::Camera(std::shared_ptr<sf::RenderWindow> window, float aspectRatio) {
     projection = glm::perspective(glm::radians(45.0f), aspectRatio, 0.01f, 200.0f);
     this->window = window;
@@ -76,6 +78,18 @@ void Camera::updateCameraFront() {
     direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
 
     front = glm::normalize(direction);
+}
+
+glm::vec3 Camera::castCollisionRay(World& world, float depth, float quality) {
+    glm::vec3 ray = position;
+
+    for (int i = 0; i < (int)(depth / quality); i++) {
+        ray += quality * glm::normalize(front);
+        if (world.getBlockAtPosition(ray) != 0)
+            return glm::vec3(floor(ray.x), floor(ray.y), floor(ray.z));
+    }
+
+    return glm::vec3(0.0f);
 }
 
 glm::mat4 Camera::getProjection() {
