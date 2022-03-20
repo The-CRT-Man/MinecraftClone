@@ -10,6 +10,7 @@
 #include <GL/gl.h>
 
 #include "stb_image.h"
+#include <list>
 
 Loader::Loader() {
     stbi_set_flip_vertically_on_load(true);  
@@ -97,12 +98,17 @@ Model Loader::generateModelBlockFace(std::vector<float> face, std::vector<int> i
     return model;
 }
 
-Model Loader::generateInstancedBlockMesh(std::vector<float> face, std::vector<int> indices, std::vector<glm::vec3> positions, std::vector<int> textureIDs) {
+BlockModel Loader::generateInstancedBlockMesh(std::vector<float> face, std::vector<int> indices, std::vector<glm::vec3> positions, std::vector<int> textureIDs) {
+    std::list<unsigned int> vbos;
+    
     unsigned int vao;
     glGenVertexArrays(1, &vao);
-    vaos.push_back(vao);
+    //vaos.push_back(vao);
 
     glBindVertexArray(vao);
+
+    for (int i = 0; i < 5; i++)
+        glEnableVertexAttribArray(i);
 
     unsigned int vbo;
     glGenBuffers(1, &vbo);
@@ -116,8 +122,8 @@ Model Loader::generateInstancedBlockMesh(std::vector<float> face, std::vector<in
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     
-    generateInstancedVBO(3, positions);
-    generateInstancedVBO(4, textureIDs);
+    vbos.push_back(generateInstancedVBO(3, positions));
+    vbos.push_back(generateInstancedVBO(4, textureIDs));
 
     unsigned int ebo;
     glGenBuffers(1, &ebo);
@@ -128,7 +134,10 @@ Model Loader::generateInstancedBlockMesh(std::vector<float> face, std::vector<in
 
     glBindVertexArray(0);
 
-    Model model = {vao, indices.size(), true};
+    for (int i = 0; i < 5; i++)
+        glDisableVertexAttribArray(i);
+
+    BlockModel model(vao, indices.size(), true, vbos);
 
     return model;
 }
@@ -204,7 +213,7 @@ unsigned int Loader::generateVBO(int index, int coordinateSize, std::vector<floa
 unsigned int Loader::generateInstancedVBO(int index, std::vector<glm::vec3> positionVectors) {
     unsigned int vbo;
     glGenBuffers(1, &vbo);
-    vbos.push_back(vbo);
+    //vbos.push_back(vbo);
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
@@ -220,7 +229,7 @@ unsigned int Loader::generateInstancedVBO(int index, std::vector<glm::vec3> posi
 unsigned int Loader::generateInstancedVBO(int index, std::vector<int> data) {
     unsigned int vbo;
     glGenBuffers(1, &vbo);
-    vbos.push_back(vbo);
+    //vbos.push_back(vbo);
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
 

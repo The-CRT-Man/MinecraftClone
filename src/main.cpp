@@ -35,7 +35,6 @@ int main() {/*
     unsigned int texture = loader.loadTexture("res/texture_atlas.png", GL_NEAREST, GL_NEAREST);
 
     World world(loader, texture);
-    //world.finishMesh();
 
     unsigned int crosshairTexture = loader.loadTexture("res/crosshair.png", GL_NEAREST, GL_NEAREST);
     std::shared_ptr<HUDElement> crosshair = std::make_shared<HUDElement>(crosshairTexture, loader);
@@ -52,10 +51,11 @@ int main() {/*
         renderingEngine->tick(dt);
 
         world.tick();
-        glm::vec3 ray = renderingEngine->getCamera()->castCollisionRay(world, 10.0f, 0.1f);
+        
         if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+            glm::vec3 ray = renderingEngine->getCamera()->castCollisionRay(world, 10.0f, 0.1f);
             world.setBlock(ray, 0);
-            std::cout << "(" << ray.x << ", " << ray.y << ", " << ray.z << ")\n";
+            //std::cout << "(" << ray.x << ", " << ray.y << ", " << ray.z << ")\n";
         }
 
         crosshair->tick();

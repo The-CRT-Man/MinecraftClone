@@ -7,6 +7,9 @@
 #include <cstdlib>
 #include <unordered_map>
 
+#include <GL/glew.h>
+#include <GL/gl.h>
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -104,11 +107,32 @@ Chunk::Chunk(Loader& loader, unsigned int texture, glm::vec2 position)
     }
 }
 
+Chunk::~Chunk() {
+    for (Face face : allFaces) {
+        glDeleteVertexArrays(1, &models[face].vao);
+
+        for (auto& vbo : models[face].vbos)
+            glDeleteBuffers(1, &vbo);
+    }
+}
+
 void Chunk::setBlock(glm::vec3 position, int blockID, std::unordered_map<Face, std::shared_ptr<Chunk>>& neighbouringChunks) {
     (*chunkData)[position.x][position.y][position.z] = blockID;
 
+    rebuildMesh(neighbouringChunks);
+}
+
+void Chunk::rebuildMesh(std::unordered_map<Face, std::shared_ptr<Chunk>>& neighbouringChunks) {
     facePositions.clear();
     faceTextureIDs.clear();
+
+    for (Face face : allFaces) {
+        glDeleteVertexArrays(1, &models[face].vao);
+
+        for (auto& vbo : models[face].vbos)
+            glDeleteBuffers(1, &vbo);
+    }
+
     buildMesh(neighbouringChunks);
 }
 
@@ -153,7 +177,7 @@ void Chunk::finaliseMesh() {
     for (auto face : allFaces) {
         if (facePositions[face].size() == 0 || faceTextureIDs.size() == 0)
             // TODO: load empty model
-            models[face] = Model({ 0, 0, true });
+            models[face] = BlockModel(0, 0, true);
         else
             models[face] = loader.generateInstancedBlockMesh(*faceVertices[face], faceIndices, facePositions[face], faceTextureIDs[face]);
         

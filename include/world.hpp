@@ -14,6 +14,7 @@ public:
 	World(Loader& loader, unsigned int texture);
 
 	void setBlock(glm::vec3 position, int blockID);
+	void buildMesh();
 
 	void render(std::shared_ptr<ChunkRenderer> renderer);
 	int getBlockAtPosition(glm::vec3 position);
@@ -22,6 +23,7 @@ public:
 private:
 	std::vector<std::vector<std::shared_ptr<Chunk>>> chunks;
 	void decorateWorld();
+	void generateWorld(unsigned int texture);
 	void loadStructure(glm::vec3 position, const Structure& structure);
 	Loader& loader;
 };

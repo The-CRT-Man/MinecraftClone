@@ -86,7 +86,7 @@ glm::vec3 Camera::castCollisionRay(World& world, float depth, float quality) {
     for (int i = 0; i < (int)(depth / quality); i++) {
         ray += quality * glm::normalize(front);
         if (world.getBlockAtPosition(ray) != 0)
-            return glm::vec3(floor(ray.x), floor(ray.y), floor(ray.z));
+            return glm::vec3(round(ray.x), round(ray.y), round(ray.z));
     }
 
     return glm::vec3(0.0f);

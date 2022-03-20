@@ -21,11 +21,14 @@ enum class Face { Top, Bottom, Left, Right, Front, Back };
 class Chunk {
 public:
     Chunk(Loader& loader, unsigned int texture, glm::vec2 position);
+    virtual ~Chunk();
+
     void setBlock(glm::vec3 position, int blockID, std::unordered_map<Face, std::shared_ptr<Chunk>>& neighbouringChunks);
 
     void tick();
 
     void buildMesh(std::unordered_map<Face, std::shared_ptr<Chunk>>& neighbouringChunks);
+    void rebuildMesh(std::unordered_map<Face, std::shared_ptr<Chunk>>& neighbouringChunks);
     void removeFaceFromMesh(glm::vec3 position, Face face);
     void finaliseMesh();
 
@@ -48,8 +51,11 @@ private:
     std::shared_ptr<Array3D> chunkData;
     Loader& loader;
 
-    std::unordered_map<Face, Model> models;
+    std::unordered_map<Face, BlockModel> models;
     std::unordered_map<Face, unsigned int> numberOfFaces;
+
+    std::list<unsigned int> chunkVAOs;
+    std::list<unsigned int> chunkVBOs;
 
     glm::vec2 position;
 

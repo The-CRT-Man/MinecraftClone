@@ -60,10 +60,11 @@ std::vector<std::vector<std::vector<int>>> tree = {
 };
 
 World::World(Loader& loader, unsigned int texture) : loader(loader) {
-	std::unordered_map<Face, std::shared_ptr<Chunk>> neighbouringChunks;
+	generateWorld(texture);
+	buildMesh();
+}
 
-	std::cout << "Building World\n";
-
+void World::generateWorld(unsigned int texture) {
 	for (int x = -8; x < 8; x++) {
 		std::vector<std::shared_ptr<Chunk>> chunkColumn;
 
@@ -77,8 +78,10 @@ World::World(Loader& loader, unsigned int texture) : loader(loader) {
 	}
 
 	decorateWorld();
+}
 
-	std::cout << "Building Mesh\n";
+void World::buildMesh() {
+	std::unordered_map<Face, std::shared_ptr<Chunk>> neighbouringChunks;
 
 	for (int x = -8; x < 8; x++)
 		for (int y = -8; y < 8; y++) {
@@ -185,9 +188,9 @@ void World::loadStructure(glm::vec3 position, const Structure& structure) {
 }
 
 int World::getBlockAtPosition(glm::vec3 position) {
-	//glm::vec3 blockCoordinate(floor(position.x), floor(position.y), floor(position.z));
-	glm::vec2 worldChunkCoords(floor(position.x / WIDTH), floor(position.z / WIDTH));
-	glm::vec3 chunkPosition(mod((int)position.x, WIDTH), (int)position.y, mod((int)position.z, WIDTH));
+	glm::vec3 intPosition(round(position.x), round(position.y), round(position.z));
+	glm::vec2 worldChunkCoords(floor(intPosition.x / WIDTH), floor(intPosition.z / WIDTH));
+	glm::vec3 chunkPosition(mod(intPosition.x, WIDTH), intPosition.y, mod(intPosition.z, WIDTH));
 
 	int blockID = -1;
 	try {
