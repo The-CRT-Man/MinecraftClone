@@ -78,7 +78,7 @@ Chunk::Chunk(Loader& loader, unsigned int texture, glm::vec2 position)
     faceVertices[Face::Front] = &frontFace;
     faceVertices[Face::Back] = &backFace;
 
-    Perlin perlin;
+    Perlin perlin(1827391755);
 
     for (unsigned int x = 0; x < WIDTH; x++) {
         for (unsigned int z = 0; z < WIDTH; z++) {

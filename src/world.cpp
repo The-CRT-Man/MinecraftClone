@@ -98,14 +98,39 @@ void World::buildMesh() {
 }
 
 void World::setBlock(glm::vec3 position, int blockID) {
-	//glm::vec2 worldChunkCoords(floor(position.x / WIDTH), floor(position.z / WIDTH));
-	int x = floor(position.x / WIDTH);
-	int y = floor(position.z / WIDTH);
+	glm::vec2 worldChunkCoords(floor(position.x / WIDTH), floor(position.z / WIDTH));
+	//int x = floor(position.x / WIDTH);
+	//int y = floor(position.z / WIDTH);
 
 	glm::vec3 chunkPosition(mod((int)position.x, WIDTH), position.y, mod((int)position.z, WIDTH));
 
+	std::unordered_map<Face, std::shared_ptr<Chunk>> neighbouringChunks = getNeighbouringChunks(worldChunkCoords);
+	std::shared_ptr<Chunk> chunk = chunks[worldChunkCoords.x + 8][worldChunkCoords.y + 8];
+
+	chunk->setBlock(chunkPosition, blockID, neighbouringChunks);
+
+	if (chunkPosition.x == WIDTH - 1 && worldChunkCoords.x != 7) {
+		std::unordered_map<Face, std::shared_ptr<Chunk>> neighbouringChunks2 = getNeighbouringChunks(glm::vec2(worldChunkCoords.x + 1, worldChunkCoords.y));
+		chunks[worldChunkCoords.x + 9][worldChunkCoords.y + 8]->rebuildMesh(neighbouringChunks2);
+	}
+	if (chunkPosition.x == 0 && worldChunkCoords.x != -8) {
+		std::unordered_map<Face, std::shared_ptr<Chunk>> neighbouringChunks2 = getNeighbouringChunks(glm::vec2(worldChunkCoords.x - 1, worldChunkCoords.y));
+		chunks[worldChunkCoords.x + 7][worldChunkCoords.y + 8]->rebuildMesh(neighbouringChunks2);
+	}
+	if (chunkPosition.z == WIDTH - 1 && worldChunkCoords.y != 7) {
+		std::unordered_map<Face, std::shared_ptr<Chunk>> neighbouringChunks2 = getNeighbouringChunks(glm::vec2(worldChunkCoords.x, worldChunkCoords.y + 1));
+		chunks[worldChunkCoords.x + 8][worldChunkCoords.y + 9]->rebuildMesh(neighbouringChunks2);
+	}
+	if (chunkPosition.z == 0 && worldChunkCoords.y != -8) {
+		std::unordered_map<Face, std::shared_ptr<Chunk>> neighbouringChunks2 = getNeighbouringChunks(glm::vec2(worldChunkCoords.x, worldChunkCoords.y - 1));
+		chunks[worldChunkCoords.x + 8][worldChunkCoords.y + 7]->rebuildMesh(neighbouringChunks2);
+	}
+}
+
+std::unordered_map<Face, std::shared_ptr<Chunk>> World::getNeighbouringChunks(glm::vec2 worldPosition) {
 	std::unordered_map<Face, std::shared_ptr<Chunk>> neighbouringChunks;
-	std::shared_ptr<Chunk> chunk = chunks[x + 8][y + 8];
+	int x = worldPosition.x;
+	int y = worldPosition.y;
 
 	if (x != -8) neighbouringChunks[Face::Left] = chunks[x + 7][y + 8];
 	if (x != 7) neighbouringChunks[Face::Right] = chunks[x + 9][y + 8];
@@ -113,11 +138,11 @@ void World::setBlock(glm::vec3 position, int blockID) {
 	if (y != -8) neighbouringChunks[Face::Back] = chunks[x + 8][y + 7];
 	if (y != 7) neighbouringChunks[Face::Front] = chunks[x + 8][y + 9];
 
-	chunk->setBlock(chunkPosition, blockID, neighbouringChunks);
+	return neighbouringChunks;
 }
 
 void World::decorateWorld() {
-	Perlin perlin;
+	Perlin perlin(1827391755);
 
 	for (unsigned int i = 0; i < 80; i++) {
 		unsigned int treeX = std::rand() % 16;

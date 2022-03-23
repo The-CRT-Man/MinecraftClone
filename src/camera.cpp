@@ -89,7 +89,7 @@ glm::vec3 Camera::castCollisionRay(World& world, float depth, float quality) {
             return glm::vec3(round(ray.x), round(ray.y), round(ray.z));
     }
 
-    return glm::vec3(0.0f);
+    return glm::vec3(0.0f, -1.0f, 0.0f);
 }
 
 glm::mat4 Camera::getProjection() {

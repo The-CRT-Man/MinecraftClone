@@ -44,6 +44,8 @@ int main() {/*
 
     sf::Clock clock;
 
+    bool mouseButtonBeenPressed = false;
+
     while (renderingEngine->isRunning()) {
         float dt = clock.getElapsedTime().asSeconds();
         clock.restart();
@@ -52,10 +54,15 @@ int main() {/*
 
         world.tick();
         
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-            glm::vec3 ray = renderingEngine->getCamera()->castCollisionRay(world, 10.0f, 0.1f);
-            world.setBlock(ray, 0);
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !mouseButtonBeenPressed) {
+            glm::vec3 ray = renderingEngine->getCamera()->castCollisionRay(world, 10.0f, 0.25f);
+            if (ray.y != -1.0f)
+                world.setBlock(ray, 0);
+            mouseButtonBeenPressed = true;
             //std::cout << "(" << ray.x << ", " << ray.y << ", " << ray.z << ")\n";
+        }
+        else if (!sf::Mouse::isButtonPressed(sf::Mouse::Left) && mouseButtonBeenPressed) {
+            mouseButtonBeenPressed = false;
         }
 
         crosshair->tick();

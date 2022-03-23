@@ -25,6 +25,7 @@ private:
 	void decorateWorld();
 	void generateWorld(unsigned int texture);
 	void loadStructure(glm::vec3 position, const Structure& structure);
+	std::unordered_map<Face, std::shared_ptr<Chunk>> getNeighbouringChunks(glm::vec2 worldPosition);
 	Loader& loader;
 };
 

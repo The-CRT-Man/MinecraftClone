@@ -37,11 +37,15 @@ vector2 Perlin::randomGradient(int ix, int iy) {
     const unsigned w = 8 * sizeof(unsigned);
     const unsigned s = w / 2;
 
+    unsigned long aSeed = seed * 1.05f;
+    unsigned long bSeed = seed * 0.85f;
+    unsigned long cSeed = seed * 1.15f;
+    
     unsigned a = ix, b = iy;
 
-    a *= 3284157443; b ^= a << s | a >> (w - s);
-    b *= 1911520717; a ^= b << s | b >> (w - s);
-    a *= 2048419325;
+    a *= aSeed; b ^= a << s | a >> (w - s);
+    b *= bSeed; a ^= b << s | b >> (w - s);
+    a *= cSeed;
 
     float random = a * (3.14159265 / ~(~0u >> 1)); // in [0, 2*Pi]
     vector2 v = {0, 0};
