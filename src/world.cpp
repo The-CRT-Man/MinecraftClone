@@ -142,7 +142,7 @@ std::unordered_map<Face, std::shared_ptr<Chunk>> World::getNeighbouringChunks(gl
 }
 
 void World::decorateWorld() {
-	Perlin perlin(1827391755);
+	Perlin perlin(372498748);
 
 	for (unsigned int i = 0; i < 80; i++) {
 		unsigned int treeX = std::rand() % 16;
@@ -152,7 +152,7 @@ void World::decorateWorld() {
 
 		float perlinX = (treeX) / ((float)WIDTH) + (float)chunkX;
 		float perlinY = (treeY) / ((float)WIDTH) + (float)chunkY;
-		int height = (int)(10 * perlin.getPerlin(perlinX, perlinY) + 64);
+		int height = (int)(20 * perlin.getPerlin(perlinX, perlinY) + 64);
 
 		glm::vec3 treePosition((int)treeX + (int)chunkX * (int)WIDTH - 2, height, (int)treeY + (int)chunkY * (int)WIDTH - 2);
 

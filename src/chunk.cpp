@@ -78,7 +78,7 @@ Chunk::Chunk(Loader& loader, unsigned int texture, glm::vec2 position)
     faceVertices[Face::Front] = &frontFace;
     faceVertices[Face::Back] = &backFace;
 
-    Perlin perlin(1827391755);
+    Perlin perlin(372498748);
 
     for (unsigned int x = 0; x < WIDTH; x++) {
         for (unsigned int z = 0; z < WIDTH; z++) {
@@ -87,7 +87,7 @@ Chunk::Chunk(Loader& loader, unsigned int texture, glm::vec2 position)
             float perlinX = (x) / ((float)WIDTH) + position.x;
             float perlinY = (z) / ((float)WIDTH) + position.y;
 
-            int height = (int)(10 * perlin.getPerlin(perlinX, perlinY) + 64);
+            int height = (int)(20 * perlin.getPerlin(perlinX, perlinY) + 64);
             if (height < 1)
                 height = 1;
             if (height > HEIGHT)

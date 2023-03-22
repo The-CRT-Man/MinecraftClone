@@ -56,6 +56,29 @@ void Renderer::setUniforms() {
     shader->setMatrix4fv("projection", camera->getProjection());
 }
 
+void OutlineRenderer::render(std::shared_ptr<Entity> outline) {
+    Model& model = outline->model;
+    unsigned int texture = outline->texture;
+
+    shader->setMatrix4fv("transform", outline->transform);
+    
+    glBindVertexArray(model.vao);
+
+    enableVertexAttribArrays();
+
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glLineWidth(2.0f);
+    glDrawElements(GL_QUADS, model.vertexCount, GL_UNSIGNED_INT, 0);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+    disableVertexAttribArrays();
+}
+
+void OutlineRenderer::setUniforms() {
+    shader->setMatrix4fv("view", camera->getView());
+    shader->setMatrix4fv("projection", camera->getProjection());
+}
+
 void ChunkRenderer::render(std::shared_ptr<Chunk> chunk) {
     auto models = chunk->getModels();
     unsigned int texture = chunk->getTexture();

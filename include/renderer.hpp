@@ -30,6 +30,17 @@ protected:
     virtual void setUniforms();
 };
 
+class OutlineRenderer : public Renderer {
+public:
+    OutlineRenderer(std::shared_ptr<Shader> shader, std::shared_ptr<Camera> camera)
+        : Renderer(shader, camera, 3) {}
+
+    void render(std::shared_ptr<Entity> outline);
+
+private:
+    void setUniforms() override;
+};
+
 class ChunkRenderer : public Renderer {
 public:
     ChunkRenderer(std::shared_ptr<Shader> shader, std::shared_ptr<Camera> camera)

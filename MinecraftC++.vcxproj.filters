@@ -63,6 +63,12 @@
     <ClInclude Include="include\world.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\player.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\collision_detection.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\chunk_fragment_shader.glsl">
@@ -83,6 +89,8 @@
     <None Include="shaders\hud_vertex_shader.glsl">
       <Filter>Resource Files\Shaders</Filter>
     </None>
+    <None Include="shaders\outline_vertex_shader.glsl" />
+    <None Include="shaders\outline_fragment_shader.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\texture_atlas.png">
@@ -121,6 +129,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\world.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\player.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\collision_detection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

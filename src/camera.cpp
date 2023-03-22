@@ -13,7 +13,7 @@
 #include "world.hpp"
 
 Camera::Camera(std::shared_ptr<sf::RenderWindow> window, float aspectRatio) {
-    projection = glm::perspective(glm::radians(45.0f), aspectRatio, 0.01f, 200.0f);
+    projection = glm::perspective(glm::radians(60.0f), aspectRatio, 0.001f, 200.0f);
     this->window = window;
 }
 
@@ -92,6 +92,20 @@ glm::vec3 Camera::castCollisionRay(World& world, float depth, float quality) {
     return glm::vec3(0.0f, -1.0f, 0.0f);
 }
 
+glm::vec3 Camera::castCollisionRaySurface(World& world, float depth, float quality) {
+    glm::vec3 ray = position;
+
+    for (int i = 0; i < (int)(depth / quality); i++) {
+        ray += quality * glm::normalize(front);
+        if (world.getBlockAtPosition(ray) != 0) {
+            ray -= quality * glm::normalize(front);
+            return glm::vec3(round(ray.x), round(ray.y), round(ray.z));
+        }
+    }
+
+    return glm::vec3(0.0f, -1.0f, 0.0f);
+}
+
 glm::mat4 Camera::getProjection() {
     return projection;
 }
@@ -106,5 +120,5 @@ void Camera::setCursorLocked(bool locked) {
 }
 
 void Camera::updateAspectRatio(float aspectRatio) {
-    projection = glm::perspective(glm::radians(45.0f), aspectRatio, 1.0f, 200.0f);
+    projection = glm::perspective(glm::radians(60.0f), aspectRatio, 0.001f, 200.0f);
 }

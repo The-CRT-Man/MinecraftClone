@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\collision_detection.hpp" />
     <ClInclude Include="include\camera.hpp" />
     <ClInclude Include="include\chunk.hpp" />
     <ClInclude Include="include\entity.hpp" />
@@ -31,6 +32,7 @@
     <ClInclude Include="include\rendering_engine.hpp" />
     <ClInclude Include="include\shader.hpp" />
     <ClInclude Include="include\world.hpp" />
+    <ClInclude Include="include\player.hpp" />
     <ClInclude Include="stb\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
@@ -39,6 +41,8 @@
     <None Include="shaders\fragment_shader.glsl" />
     <None Include="shaders\hud_fragment_shader.glsl" />
     <None Include="shaders\hud_vertex_shader.glsl" />
+    <None Include="shaders\outline_fragment_shader.glsl" />
+    <None Include="shaders\outline_vertex_shader.glsl" />
     <None Include="shaders\vertex_shader.glsl" />
   </ItemGroup>
   <ItemGroup>
@@ -46,6 +50,8 @@
     <Image Include="res\texture_atlas.png" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\collision_detection.cpp" />
+    <ClCompile Include="src\player.cpp" />
     <ClCompile Include="src\camera.cpp" />
     <ClCompile Include="src\chunk.cpp" />
     <ClCompile Include="src\loader.cpp" />

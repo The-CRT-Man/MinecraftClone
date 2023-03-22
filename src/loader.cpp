@@ -65,6 +65,24 @@ Model Loader::generateModel(std::vector<float> vertices, std::vector<float> text
     return model;
 }
 
+Model Loader::generateTexuturelessModel(std::vector<float> vertices, std::vector<int> indices) {
+    unsigned int vao;
+    glGenVertexArrays(1, &vao);
+    vaos.push_back(vao);
+
+    glBindVertexArray(vao);
+
+    generateVBO(0, 3, vertices, GL_STATIC_DRAW);
+
+    generateIndicesVBO(indices, GL_STATIC_DRAW);
+
+    glBindVertexArray(0);
+
+    Model model = {vao, indices.size(), true};
+
+    return model;
+}
+
 Model Loader::generateModelBlockFace(std::vector<float> face, std::vector<int> indices) {
     unsigned int vao;
     glGenVertexArrays(1, &vao);

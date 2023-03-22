@@ -35,6 +35,7 @@ RenderingEngine::RenderingEngine() {
     shader = std::make_shared<Shader>("shaders/vertex_shader.glsl", "shaders/fragment_shader.glsl");
     chunkShader = std::make_shared<Shader>("shaders/chunk_vertex_shader.glsl", "shaders/chunk_fragment_shader.glsl");
     hudShader = std::make_shared<Shader>("shaders/hud_vertex_shader.glsl", "shaders/hud_fragment_shader.glsl");
+    outlineShader = std::make_shared<Shader>("shaders/outline_vertex_shader.glsl", "shaders/outline_fragment_shader.glsl");
 
     camera = std::make_shared<Camera>(window, 1280.0f/720.0f);
     camera->setPosition(glm::vec3(0.0f, 70.0f, 0.0f));
@@ -42,6 +43,7 @@ RenderingEngine::RenderingEngine() {
     renderer = std::make_unique<Renderer>(shader, camera, 2);
     chunkRenderer = std::make_shared<ChunkRenderer>(chunkShader, camera);
     hudRenderer = std::make_shared<HUDRenderer>(hudShader, camera);
+    outlineRenderer = std::make_shared<OutlineRenderer>(outlineShader, camera);
 }
 
 void RenderingEngine::initialiseOpenGL() {
@@ -86,6 +88,7 @@ void RenderingEngine::tick(float dt) {
 void RenderingEngine::render(World& world) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glDisable(GL_BLEND);
+    //glEnable(GL_DEPTH_TEST);
 
     renderer->begin();
 
@@ -96,10 +99,17 @@ void RenderingEngine::render(World& world) {
 
     chunkRenderer->begin();
 
-    //chunkRenderer->render(*chunk);
     world.render(chunkRenderer);
 
     chunkRenderer->end();
+
+    //glDisable(GL_DEPTH_TEST);
+
+    outlineRenderer->begin();
+
+    outlineRenderer->render(outline);
+
+    outlineRenderer->end();
 
     glEnable(GL_BLEND);
     hudRenderer->begin();
