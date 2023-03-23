@@ -297,6 +297,9 @@ int Chunk::getTextureID(Face face, int blockID) {
     case 5:
         textureID = 6;
         break;
+    case 6:
+        textureID = 7;
+        break;
     }
 
     return textureID;

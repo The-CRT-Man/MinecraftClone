@@ -74,6 +74,8 @@ int main() {/*
     std::shared_ptr<Entity> outline = std::make_shared<Entity>(0, outlineModel);
     renderingEngine->outline = outline;
 
+    int heldBlock = 0;
+
     while (renderingEngine->isRunning()) {
         float dt = clock.getElapsedTime().asSeconds();
         clock.restart();
@@ -98,12 +100,25 @@ int main() {/*
         if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && !rightMouseButtonBeenPressed) {
             glm::vec3 ray = renderingEngine->getCamera()->castCollisionRaySurface(world, 10.0f, 0.05f);
             if (ray.y != -1.0f)
-                world.setBlock(ray, 1);
+                world.setBlock(ray, heldBlock);
             rightMouseButtonBeenPressed = true;
         }
         else if (!sf::Mouse::isButtonPressed(sf::Mouse::Right) && rightMouseButtonBeenPressed) {
             rightMouseButtonBeenPressed = false;
         }
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num1))
+            heldBlock = 1;
+        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num2))
+            heldBlock = 2;
+        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num3))
+            heldBlock = 3;
+        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num4))
+            heldBlock = 4;
+        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num5))
+            heldBlock = 5;
+        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num6))
+            heldBlock = 6;
 
         crosshair->tick();
         outline->tick();
