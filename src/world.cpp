@@ -14,6 +14,9 @@ inline int mod(int a, int b) {
 	return (a % b + b) % b;
 }
 
+const int worldSizeX = 16;
+const int worldSizeY = 16;
+
 std::vector<std::vector<std::vector<int>>> tree = {
 	{
 		{0, 0, 0, 0, 0},
@@ -65,10 +68,10 @@ World::World(Loader& loader, unsigned int texture) : loader(loader) {
 }
 
 void World::generateWorld(unsigned int texture) {
-	for (int x = -8; x < 8; x++) {
+	for (int x = -worldSizeX / 2; x < worldSizeX / 2; x++) {
 		std::vector<std::shared_ptr<Chunk>> chunkColumn;
 
-		for (int y = -8; y < 8; y++) {
+		for (int y = -worldSizeY / 2; y < worldSizeY / 2; y++) {
 			glm::vec2 position(x, y);
 			std::shared_ptr<Chunk> chunk = std::make_shared<Chunk>(loader, texture, position);
 			chunkColumn.push_back(chunk);
@@ -83,17 +86,17 @@ void World::generateWorld(unsigned int texture) {
 void World::buildMesh() {
 	std::unordered_map<Face, std::shared_ptr<Chunk>> neighbouringChunks;
 
-	for (int x = -8; x < 8; x++)
-		for (int y = -8; y < 8; y++) {
+	for (int x = -worldSizeX / 2; x < worldSizeX / 2; x++)
+		for (int y = -worldSizeY / 2; y < worldSizeY / 2; y++) {
 			neighbouringChunks = {};
 
-			if (x != -8) neighbouringChunks[Face::Left] = chunks[x + 7][y + 8];
-			if (x != 7) neighbouringChunks[Face::Right] = chunks[x + 9][y + 8];
+			if (x != -worldSizeX / 2) neighbouringChunks[Face::Left] = chunks[x + (worldSizeX / 2) - 1][y + (worldSizeY / 2)];
+			if (x != (worldSizeX / 2) - 1) neighbouringChunks[Face::Right] = chunks[x + (worldSizeX / 2) + 1][y + (worldSizeY / 2)];
 
-			if (y != -8) neighbouringChunks[Face::Back] = chunks[x + 8][y + 7];
-			if (y != 7) neighbouringChunks[Face::Front] = chunks[x + 8][y + 9];
+			if (y != -worldSizeY / 2) neighbouringChunks[Face::Back] = chunks[x + (worldSizeX / 2)][y + (worldSizeY / 2) - 1];
+			if (y != (worldSizeY / 2) - 1) neighbouringChunks[Face::Front] = chunks[x + (worldSizeX / 2)][y + (worldSizeY / 2) + 1];
 
-			chunks[x + 8][y + 8]->buildMesh(neighbouringChunks);
+			chunks[x + (worldSizeX / 2)][y + (worldSizeY / 2)]->buildMesh(neighbouringChunks);
 		}
 }
 
@@ -105,25 +108,25 @@ void World::setBlock(glm::vec3 position, int blockID) {
 	glm::vec3 chunkPosition(mod((int)position.x, WIDTH), position.y, mod((int)position.z, WIDTH));
 
 	std::unordered_map<Face, std::shared_ptr<Chunk>> neighbouringChunks = getNeighbouringChunks(worldChunkCoords);
-	std::shared_ptr<Chunk> chunk = chunks[worldChunkCoords.x + 8][worldChunkCoords.y + 8];
+	std::shared_ptr<Chunk> chunk = chunks[worldChunkCoords.x + (worldSizeX / 2)][worldChunkCoords.y + (worldSizeY / 2)];
 
 	chunk->setBlock(chunkPosition, blockID, neighbouringChunks);
-
-	if (chunkPosition.x == WIDTH - 1 && worldChunkCoords.x != 7) {
+	
+	if (chunkPosition.x == WIDTH - 1 && worldChunkCoords.x != (worldSizeX / 2) - 1) {
 		std::unordered_map<Face, std::shared_ptr<Chunk>> neighbouringChunks2 = getNeighbouringChunks(glm::vec2(worldChunkCoords.x + 1, worldChunkCoords.y));
-		chunks[worldChunkCoords.x + 9][worldChunkCoords.y + 8]->rebuildMesh(neighbouringChunks2);
+		chunks[worldChunkCoords.x + (worldSizeX / 2) + 1][worldChunkCoords.y + (worldSizeY / 2)]->rebuildMesh(neighbouringChunks2);
 	}
-	if (chunkPosition.x == 0 && worldChunkCoords.x != -8) {
+	if (chunkPosition.x == 0 && worldChunkCoords.x != -(worldSizeX / 2)) {
 		std::unordered_map<Face, std::shared_ptr<Chunk>> neighbouringChunks2 = getNeighbouringChunks(glm::vec2(worldChunkCoords.x - 1, worldChunkCoords.y));
-		chunks[worldChunkCoords.x + 7][worldChunkCoords.y + 8]->rebuildMesh(neighbouringChunks2);
+		chunks[worldChunkCoords.x + (worldSizeX / 2) - 1][worldChunkCoords.y + (worldSizeY / 2)]->rebuildMesh(neighbouringChunks2);
 	}
-	if (chunkPosition.z == WIDTH - 1 && worldChunkCoords.y != 7) {
+	if (chunkPosition.z == WIDTH - 1 && worldChunkCoords.y != (worldSizeY / 2)) {
 		std::unordered_map<Face, std::shared_ptr<Chunk>> neighbouringChunks2 = getNeighbouringChunks(glm::vec2(worldChunkCoords.x, worldChunkCoords.y + 1));
-		chunks[worldChunkCoords.x + 8][worldChunkCoords.y + 9]->rebuildMesh(neighbouringChunks2);
+		chunks[worldChunkCoords.x + (worldSizeX / 2)][worldChunkCoords.y + (worldSizeY / 2) + 1]->rebuildMesh(neighbouringChunks2);
 	}
-	if (chunkPosition.z == 0 && worldChunkCoords.y != -8) {
+	if (chunkPosition.z == 0 && worldChunkCoords.y != -(worldSizeY / 2)) {
 		std::unordered_map<Face, std::shared_ptr<Chunk>> neighbouringChunks2 = getNeighbouringChunks(glm::vec2(worldChunkCoords.x, worldChunkCoords.y - 1));
-		chunks[worldChunkCoords.x + 8][worldChunkCoords.y + 7]->rebuildMesh(neighbouringChunks2);
+		chunks[worldChunkCoords.x + (worldSizeX / 2)][worldChunkCoords.y + (worldSizeY / 2) - 1]->rebuildMesh(neighbouringChunks2);
 	}
 }
 
@@ -132,11 +135,11 @@ std::unordered_map<Face, std::shared_ptr<Chunk>> World::getNeighbouringChunks(gl
 	int x = worldPosition.x;
 	int y = worldPosition.y;
 
-	if (x != -8) neighbouringChunks[Face::Left] = chunks[x + 7][y + 8];
-	if (x != 7) neighbouringChunks[Face::Right] = chunks[x + 9][y + 8];
+	if (x != -(worldSizeX / 2)) neighbouringChunks[Face::Left] = chunks[x + (worldSizeX / 2) - 1][y + (worldSizeY / 2)];
+	if (x != (worldSizeX / 2) - 1) neighbouringChunks[Face::Right] = chunks[x + (worldSizeX / 2) + 1][y + (worldSizeY / 2)];
 
-	if (y != -8) neighbouringChunks[Face::Back] = chunks[x + 8][y + 7];
-	if (y != 7) neighbouringChunks[Face::Front] = chunks[x + 8][y + 9];
+	if (y != -(worldSizeY / 2)) neighbouringChunks[Face::Back] = chunks[x + (worldSizeX / 2)][y + (worldSizeY / 2) - 1];
+	if (y != (worldSizeY / 2) - 1) neighbouringChunks[Face::Front] = chunks[x + (worldSizeX / 2)][y + (worldSizeY / 2) + 1];
 
 	return neighbouringChunks;
 }
@@ -145,10 +148,10 @@ void World::decorateWorld() {
 	Perlin perlin(372498748);
 
 	for (unsigned int i = 0; i < 80; i++) {
-		unsigned int treeX = std::rand() % 16;
-		unsigned int treeY = std::rand() % 16;
-		int chunkX = (std::rand() % 16) - 8;
-		int chunkY = (std::rand() % 16) - 8;
+		unsigned int treeX = std::rand() % WIDTH;
+		unsigned int treeY = std::rand() % WIDTH;
+		int chunkX = (std::rand() % worldSizeX) - (worldSizeX / 2);
+		int chunkY = (std::rand() % worldSizeY) - (worldSizeY / 2);
 
 		float perlinX = (treeX) / ((float)WIDTH) + (float)chunkX;
 		float perlinY = (treeY) / ((float)WIDTH) + (float)chunkY;
@@ -167,27 +170,27 @@ void World::loadStructure(glm::vec3 position, const Structure& structure) {
 	std::vector<std::shared_ptr<Chunk>> chunks;
 	
 	try {
-		chunks.push_back(this->chunks.at(worldChunkCoords.x + 8).at(worldChunkCoords.y + 8));
+		chunks.push_back(this->chunks.at(worldChunkCoords.x + (worldSizeX / 2)).at(worldChunkCoords.y + (worldSizeY / 2)));
 	}
 	catch (const std::exception& e) {}
 
 	if (chunkPositions[0].x + dimensions.x > WIDTH) {
 		try {
-			chunks.push_back(this->chunks.at(worldChunkCoords.x + 1 + 8).at(worldChunkCoords.y + 8));
+			chunks.push_back(this->chunks.at(worldChunkCoords.x + 1 + (worldSizeX / 2)).at(worldChunkCoords.y + (worldSizeY / 2)));
 			chunkPositions.push_back(glm::vec3(chunkPositions[0].x - WIDTH, chunkPositions[0].y, chunkPositions[0].z));
 		}
 		catch (const std::exception& e) {}
 	}
 	if (chunkPositions[0].z + dimensions.z > WIDTH) {
 		try {
-			chunks.push_back(this->chunks.at(worldChunkCoords.x + 8).at(worldChunkCoords.y + 1 + 8));
+			chunks.push_back(this->chunks.at(worldChunkCoords.x + (worldSizeX / 2)).at(worldChunkCoords.y + 1 + (worldSizeY / 2)));
 			chunkPositions.push_back(glm::vec3(chunkPositions[0].x, chunkPositions[0].y, chunkPositions[0].z - WIDTH));
 		}
 		catch (const std::exception& e) {}
 	}
 	if (chunkPositions[0].x + dimensions.x > WIDTH && chunkPositions[0].z + dimensions.z > WIDTH) {
 		try {
-			chunks.push_back(this->chunks.at(worldChunkCoords.x + 1 + 8).at(worldChunkCoords.y + 1 + 8));
+			chunks.push_back(this->chunks.at(worldChunkCoords.x + 1 + (worldSizeX / 2)).at(worldChunkCoords.y + 1 + (worldSizeY / 2)));
 			chunkPositions.push_back(glm::vec3(chunkPositions[0].x - WIDTH, chunkPositions[0].y, chunkPositions[0].z - WIDTH));
 		}
 		catch (const std::exception& e) {}
@@ -219,7 +222,7 @@ int World::getBlockAtPosition(glm::vec3 position) {
 
 	int blockID = -1;
 	try {
-		blockID = (*chunks.at(worldChunkCoords.x + 8).at(worldChunkCoords.y + 8)->getChunkData()).at(chunkPosition.x).at(chunkPosition.y).at(chunkPosition.z);
+		blockID = (*chunks.at(worldChunkCoords.x + (worldSizeX / 2)).at(worldChunkCoords.y + (worldSizeY / 2))->getChunkData()).at(chunkPosition.x).at(chunkPosition.y).at(chunkPosition.z);
 	}
 	catch (const std::exception& e) {}
 

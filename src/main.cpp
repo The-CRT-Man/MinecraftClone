@@ -14,6 +14,7 @@
 #include <glm/glm.hpp>
 
 #include "player.hpp"
+#include "collision_detection.hpp"
 #include "rendering_engine.hpp"
 #include "shader.hpp"
 #include "loader.hpp"
@@ -57,7 +58,7 @@ int main() {/*
 
     unsigned int texture = loader.loadTexture("res/texture_atlas.png", GL_NEAREST, GL_NEAREST);
 
-    World world(loader, texture);
+    std::shared_ptr<World> world = std::make_shared<World>(loader, texture);
 
     unsigned int crosshairTexture = loader.loadTexture("res/crosshair.png", GL_NEAREST, GL_NEAREST);
     std::shared_ptr<HUDElement> crosshair = std::make_shared<HUDElement>(crosshairTexture, loader);
@@ -70,6 +71,9 @@ int main() {/*
     bool leftMouseButtonBeenPressed = false;
     bool rightMouseButtonBeenPressed = false;
 
+    std::shared_ptr<Player> player = std::make_shared<Player>(renderingEngine->getCamera(), glm::vec3(0.0f, 70.0f, 0.0f));
+    CollisionDetection collisionDetection(player, world);
+
     Model outlineModel = loader.generateTexuturelessModel(outlineCubeVertices, outlineCubeIndices);
     std::shared_ptr<Entity> outline = std::make_shared<Entity>(0, outlineModel);
     renderingEngine->outline = outline;
@@ -81,15 +85,18 @@ int main() {/*
         clock.restart();
 
         renderingEngine->tick(dt);
+        
+        player->tick(dt);
+        collisionDetection.tick();
 
-        world.tick();
+        world->tick();
         glm::vec3 ray = renderingEngine->getCamera()->castCollisionRay(world, 10.0f, 0.05f);
         outline->position = ray;
         
         if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !leftMouseButtonBeenPressed) {
             
             if (ray.y != -1.0f)
-                world.setBlock(ray, 0);
+                world->setBlock(ray, 0);
             leftMouseButtonBeenPressed = true;
             //std::cout << "(" << ray.x << ", " << ray.y << ", " << ray.z << ")\n";
         }
@@ -99,8 +106,10 @@ int main() {/*
 
         if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && !rightMouseButtonBeenPressed) {
             glm::vec3 ray = renderingEngine->getCamera()->castCollisionRaySurface(world, 10.0f, 0.05f);
-            if (ray.y != -1.0f)
-                world.setBlock(ray, heldBlock);
+            if (ray.y != -1.0f) {
+                //std::cout << ray.x << ", " << ray.y << ", " << ray.z << "\n";
+                world->setBlock(ray, heldBlock);
+            }
             rightMouseButtonBeenPressed = true;
         }
         else if (!sf::Mouse::isButtonPressed(sf::Mouse::Right) && rightMouseButtonBeenPressed) {

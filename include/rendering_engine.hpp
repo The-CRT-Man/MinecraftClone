@@ -24,7 +24,7 @@ public:
     bool isRunning();
 
     void tick(float dt);
-    void render(World& world);
+    void render(std::shared_ptr<World> world);
 
     std::shared_ptr<Camera> getCamera();
 

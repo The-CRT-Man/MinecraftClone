@@ -229,8 +229,12 @@ bool Chunk::shouldAddFace(int x, int y, int z, Face face, std::unordered_map<Fac
                 return ((*neighbouringChunks[Face::Back]->getChunkData())[x][y][WIDTH - 1] == 0);
             else
                 return true;
-        else
+        else {
+            //int p = (*chunkData)[x][y][z - 1];
+            //bool r = p == 0;
             return ((*chunkData)[x][y][z - 1] == 0);
+            //return r;
+        }
     } 
     else if (face == Face::Front) {
         if (z == WIDTH - 1)

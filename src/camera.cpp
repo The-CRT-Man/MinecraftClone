@@ -12,8 +12,12 @@
 
 #include "world.hpp"
 
+const float FOV = 70.0f;
+const float NEAR_PLANE = 0.001f;
+const float FAR_PLANE = 200.0f;
+
 Camera::Camera(std::shared_ptr<sf::RenderWindow> window, float aspectRatio) {
-    projection = glm::perspective(glm::radians(60.0f), aspectRatio, 0.001f, 200.0f);
+    projection = glm::perspective(glm::radians(FOV), aspectRatio, NEAR_PLANE, FAR_PLANE);
     this->window = window;
 }
 
@@ -23,7 +27,7 @@ void Camera::tick(float dt) {
 
     //std::cout << dts << "\n";
 
-    float speed = 5.0f * dt;
+    //float speed = 5.0f * dt;
     float sensitivity = 100.0f * dt;
 
     //float speed = 0.03f;
@@ -31,7 +35,9 @@ void Camera::tick(float dt) {
 
     //std::cout << dt.count() << ", " << dts << ", " << sensitivity << "\n";
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+    //std::cout << position.x << ", " << position.y << ", " << position.z << "\n";
+
+    /*if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
         position += speed * glm::normalize(glm::vec3(front.x, 0, front.z)) * glm::length(front);
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
         position -= speed * glm::normalize(glm::vec3(front.x, 0, front.z)) * glm::length(front);
@@ -44,7 +50,7 @@ void Camera::tick(float dt) {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) 
         position += glm::vec3(0, speed, 0);
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
-        position -= glm::vec3(0, speed, 0);
+        position -= glm::vec3(0, speed, 0);*/
 
     sf::Vector2i mousePosition = sf::Mouse::getPosition(*window);
     sf::Vector2f mouseOffset = sf::Vector2f(mousePosition - sf::Vector2i(1280 / 2, 720 / 2));
@@ -80,24 +86,24 @@ void Camera::updateCameraFront() {
     front = glm::normalize(direction);
 }
 
-glm::vec3 Camera::castCollisionRay(World& world, float depth, float quality) {
+glm::vec3 Camera::castCollisionRay(std::shared_ptr<World> world, float depth, float quality) {
     glm::vec3 ray = position;
 
     for (int i = 0; i < (int)(depth / quality); i++) {
         ray += quality * glm::normalize(front);
-        if (world.getBlockAtPosition(ray) != 0)
+        if (world->getBlockAtPosition(ray) != 0)
             return glm::vec3(round(ray.x), round(ray.y), round(ray.z));
     }
 
     return glm::vec3(0.0f, -1.0f, 0.0f);
 }
 
-glm::vec3 Camera::castCollisionRaySurface(World& world, float depth, float quality) {
+glm::vec3 Camera::castCollisionRaySurface(std::shared_ptr<World> world, float depth, float quality) {
     glm::vec3 ray = position;
 
     for (int i = 0; i < (int)(depth / quality); i++) {
         ray += quality * glm::normalize(front);
-        if (world.getBlockAtPosition(ray) != 0) {
+        if (world->getBlockAtPosition(ray) != 0) {
             ray -= quality * glm::normalize(front);
             return glm::vec3(round(ray.x), round(ray.y), round(ray.z));
         }
@@ -120,5 +126,5 @@ void Camera::setCursorLocked(bool locked) {
 }
 
 void Camera::updateAspectRatio(float aspectRatio) {
-    projection = glm::perspective(glm::radians(60.0f), aspectRatio, 0.001f, 200.0f);
+    projection = glm::perspective(glm::radians(FOV), aspectRatio, NEAR_PLANE, FAR_PLANE);
 }

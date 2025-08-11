@@ -25,9 +25,11 @@ public:
 
     void setPosition(glm::vec3 position) { this->position = position; }
     glm::vec3 getPosition() { return this->position; }
+    glm::vec3 getFront() { return this->front; }
+    glm::vec3 getUp() { return this->up; }
 
-    glm::vec3 castCollisionRay(World& world, float depth, float quality);
-    glm::vec3 castCollisionRaySurface(World& world, float depth, float quality);
+    glm::vec3 castCollisionRay(std::shared_ptr<World> world, float depth, float quality);
+    glm::vec3 castCollisionRaySurface(std::shared_ptr<World> world, float depth, float quality);
 
 private:
     bool cursorLocked = false;

@@ -85,7 +85,7 @@ void RenderingEngine::tick(float dt) {
     camera->tick(dt);
 }
 
-void RenderingEngine::render(World& world) {
+void RenderingEngine::render(std::shared_ptr<World> world) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glDisable(GL_BLEND);
     //glEnable(GL_DEPTH_TEST);
@@ -99,7 +99,7 @@ void RenderingEngine::render(World& world) {
 
     chunkRenderer->begin();
 
-    world.render(chunkRenderer);
+    world->render(chunkRenderer);
 
     chunkRenderer->end();
 
